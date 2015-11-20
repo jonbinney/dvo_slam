@@ -7,7 +7,7 @@ LIST(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake_modules")
 find_package(catkin REQUIRED COMPONENTS roscpp dynamic_reconfigure dvo_core dvo_ros sensor_msgs image_transport message_filters cv_bridge visualization_msgs interactive_markers)
 find_package(cmake_modules REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(G2O REQUIRED)
+#find_package(G2O REQUIRED)
 find_package(SuiteSparse REQUIRED)
 #find_package(sophus REQUIRED)
 #find_package(Boost REQUIRED thread)
@@ -16,11 +16,38 @@ find_package(TBB REQUIRED)
 
 #LIST(APPEND CMAKE_CXX_FLAGS "-std=c++11")
 
-IF(G2O_FOUND)
-message(STATUS "found g2o ${G2O_FOUND}")
-ELSE()
-message(ERROR "g2o missing")
-ENDIF()
+#IF(G2O_FOUND)
+#message(STATUS "found g2o ${G2O_FOUND}")
+#ELSE()
+#message(ERROR "g2o missing")
+#ENDIF()
+
+set(G2O_LIBS g2o_cli.so
+  g2o_core
+  g2o_csparse_extension
+  g2o_ext_freeglut_minimal
+  g2o_incremental
+  g2o_interactive
+  g2o_interface
+  g2o_opengl_helper
+  g2o_parser
+  g2o_simulator
+  g2o_solver_cholmod
+  g2o_solver_csparse
+  g2o_solver_dense
+  g2o_solver_eigen
+  g2o_solver_pcg
+  g2o_solver_slam2d_linear
+  g2o_solver_structure_only
+  g2o_stuff
+  g2o_types_data
+  g2o_types_icp
+  g2o_types_sba
+  g2o_types_sclam2d
+  g2o_types_sim3
+  g2o_types_slam2d
+  g2o_types_slam3d
+)
 
 # dynamic reconfigure
 generate_dynamic_reconfigure_options(cfg/GraphVisualizer.cfg cfg/KeyframeSlam.cfg)
@@ -36,8 +63,12 @@ include_directories(
   ${dvo_slam_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIRS}
-  ${G2O_INCLUDE_DIR}
+  #${G2O_INCLUDE_DIR}
   ${CSPARSE_INCLUDE_DIR}
+)
+
+link_directories(
+  ${catkin_LIBRARY_DIRS}
 )
 
 # messages
@@ -72,12 +103,13 @@ add_library(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-  ${G2O_CORE_LIBRARY}
-  ${G2O_SOLVER_DENSE}
-  ${G2O_SOLVER_CSPARSE}
-  ${G2O_SOLVER_CSPARSE_EXTENSION}
+#  ${G2O_CORE_LIBRARY}
+#  ${G2O_SOLVER_DENSE}
+#  ${G2O_SOLVER_CSPARSE}
+#  ${G2O_SOLVER_CSPARSE_EXTENSION}
   ${CSPARSE_LIBRARY}
-  ${G2O_TYPES_SLAM3D}
+#  ${G2O_TYPES_SLAM3D}
+  ${G2O_LIBS}
   ${catkin_LIBRARIES}
 )
 
